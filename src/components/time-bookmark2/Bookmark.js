@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./style.css";
+import Total from "./Total";
 
 const parseTimes = () =>{
 	if (localStorage.getItem('localTime')) {
@@ -25,7 +26,7 @@ const Bookmark = () =>{
 	const [times,setTimes] = useState(parseTimes);
 	const [startTimeId,setStartTimeId] = useState(getLocalStartId);
 	const [delWarningMsg,setDelWarningMsg] = useState(false);
-	const [totalMin,setTotalMin] = useState([]);
+	const [totalMin,setTotalMin] = useState();
 
 
 	const startRecess = () =>{
@@ -40,6 +41,7 @@ const Bookmark = () =>{
 				{hr: ''},
 				{min: ''}
 			],
+			total: ''
 		}
 
 	
@@ -56,8 +58,26 @@ const Bookmark = () =>{
 	const stopRecess = () =>{
 		const update = times.map((time)=>{
 			if (parseInt(time.id) == parseInt(startTimeId)) {
+				let recessMin;
+				let ehr = new Date().getHours().toString();
+				let emin = new Date().getMinutes().toString();
 			
-				return {...time, end: [{hr:new Date().getHours().toString()},{min:new Date().getMinutes().toString()}]}
+
+
+				times.map((time)=>{
+					let minDiff = (emin - time.start[1].min);
+					let hoursDiff = 0;
+
+					if (minDiff<59){
+						hoursDiff = (ehr - time.start[0].hr)*60
+					}
+
+					recessMin =  hoursDiff  + (emin - time.start[1].min);
+				})
+
+
+
+				return {...time, end: [{hr:ehr},{min:emin}], total:recessMin}
 			}
 			else{
 				return time;
@@ -92,10 +112,45 @@ const Bookmark = () =>{
 	}
 
 
+	const TimeList = () =>{
+		return(
+			<ul className="timeList">
+				{
+					times.map((time)=>{
+						let minDiff = (time.end[1].min - time.start[1].min);
+						let hoursDiff = 0;
+
+						if (minDiff<59){
+							hoursDiff = (time.end[0].hr - time.start[0].hr)*60
+						}
+
+						let recessMin =  hoursDiff  + (time.end[1].min - time.start[1].min);
+
+						return (
+							<>
+							<li	key={time.id} className="totalRecMin">	{recessMin < 0 ? 'Counting total Min' : recessMin+' min'} </li>
+							
+							<li	key={time.id+1} className="timeBreak">
+							Start: {time.start[0].hr+'hr '}  
+							{ time.start[1].min+'min'} :: 
+
+							End: {time.end[0].hr}{time.end[0].hr && 'hr '}
+							{time.end[1].min}{time.end[0].hr && 'min'}
+							</li>
+							</>
+							)
+					})
+					
+				}
+			</ul>
+		)
+	}
+
 
 	return (
 		<div className="container">
-		<h2 className="title">Record your recess</h2>
+		<h2 className="title">Record Your Recess</h2>
+		<Total data={times} />
 
 			<p style={{color: 'white'}}>
 			</p>
@@ -106,36 +161,7 @@ const Bookmark = () =>{
 
 			{/* <div className="timeCounter">{parseInt(startSec/60)}<span className="sec">{startSec}s</span></div> */}
 
-			<ul className="timeList">
-			{
-				times.map((time)=>{
-					let minDiff = (time.end[1].min - time.start[1].min);
-					let hoursDiff = 0;
-
-					if (minDiff<59){
-						hoursDiff = (time.end[0].hr - time.start[0].hr)*60
-					}
-
-					let recessMin =  hoursDiff  + (time.end[1].min - time.start[1].min);
-
-
-					return (
-						<>
-						<li	key={time.id} className="totalRecMin">	{recessMin < 0 ? 'Counting total Min' : recessMin+' min'} </li>
-						
-						<li	key={time.id+1} className="timeBreak">
-						Start: {time.start[0].hr+'hr '}  
-						{ time.start[1].min+'min'} :: 
-
-						End: {time.end[0].hr}{time.end[0].hr && 'hr '}
-						{time.end[1].min}{time.end[0].hr && 'min'}
-						</li>
-						</>
-						)
-				})
-				
-			}
-			</ul>
+			<TimeList />
 			{
 				delWarningMsg &&
 				<div className="alert">
