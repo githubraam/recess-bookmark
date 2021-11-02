@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./style.css";
 import Total from "./Total";
 
+
 const parseTimes = () =>{
 	if (localStorage.getItem('localTime')) {
 		return JSON.parse(localStorage.getItem('localTime'));
@@ -26,11 +27,33 @@ const Bookmark = () =>{
 	const [times,setTimes] = useState(parseTimes);
 	const [startTimeId,setStartTimeId] = useState(getLocalStartId);
 	const [delWarningMsg,setDelWarningMsg] = useState(false);
-	const [totalMin,setTotalMin] = useState();
+    const [ minutes, setMinutes ] = useState(-1);
+    const [seconds, setSeconds ] =  useState(-1);
+	const [isDuplicate, setIsDuplicate] = useState(false);
+
+
+
+	let myInterval;
+    useEffect(()=>{
+	myInterval = setInterval(() => {
+			if (seconds >= 0) {
+				setSeconds(seconds + 1);
+			}
+			if(seconds >= 59){
+				setMinutes(minutes + 1);
+				setSeconds(0);
+			} 
+		}, 1000)
+		return ()=> {
+			clearInterval(myInterval);
+		};
+	});
+
 
 
 	const startRecess = () =>{
-		
+		setMinutes(0);
+		setSeconds(0);
 		const newTimeArray = {
 			id: new Date().getTime(),
 			start:[
@@ -56,9 +79,12 @@ const Bookmark = () =>{
 	
 
 	const stopRecess = () =>{
+		let recessMin;
+		
+		
 		const update = times.map((time)=>{
+			
 			if (parseInt(time.id) == parseInt(startTimeId)) {
-				let recessMin;
 				let ehr = new Date().getHours().toString();
 				let emin = new Date().getMinutes().toString();
 			
@@ -75,18 +101,29 @@ const Bookmark = () =>{
 					recessMin =  hoursDiff  + (emin - time.start[1].min);
 				})
 
-
-
+				if(recessMin === 0){
+					setIsDuplicate(true);
+					setTimeout(function(){ setIsDuplicate(false); }, 1500);
+				}
+				
 				return {...time, end: [{hr:ehr},{min:emin}], total:recessMin}
+
+
+
+				
 			}
 			else{
 				return time;
 			}
 			
 		});
-
-		setTimes(update);
-		setStartTimeId('');
+		if(recessMin !== 0){
+			setTimes(update);
+			setStartTimeId('');
+			setMinutes(-1);
+			setSeconds(-1);
+		}
+			
 	}
 
 	useEffect(()=>{
@@ -106,6 +143,8 @@ const Bookmark = () =>{
 		setTimes([]);
 		setDelWarningMsg(false);
 		setStartTimeId('');
+		setMinutes(-1);
+		setSeconds(-1);
 	}
 	const confirmNo = () =>{
 		setDelWarningMsg(false);
@@ -149,8 +188,12 @@ const Bookmark = () =>{
 
 	return (
 		<div className="container">
-		<h2 className="title">Record Your Recess</h2>
-		<Total data={times} />
+			<h2 className="title">Record Your Recess</h2>
+			{ minutes >= 0 && seconds >= 0
+				? <div className="timer">{minutes}:{seconds < 10 ?  `0${seconds}` : seconds}</div>
+				:  null
+			}
+			<Total time={times} counter={minutes} />
 
 			<p style={{color: 'white'}}>
 			</p>
@@ -159,7 +202,6 @@ const Bookmark = () =>{
 				{ startTimeId=='' ? <button className="btn add" onClick={startRecess}>Start</button> : <button className="btn stop" onClick={stopRecess}>Stop</button>}
 			</div>
 
-			{/* <div className="timeCounter">{parseInt(startSec/60)}<span className="sec">{startSec}s</span></div> */}
 
 			<TimeList />
 			{
@@ -172,9 +214,14 @@ const Bookmark = () =>{
 					<button className="btn" onClick={confirmNo}>No</button>
 				</div>
 			}
-			{times.length>0 && <button className="deleteAll" onClick={handleDelAll}>Delete All</button>}			
+			{times.length>0 && <button className="deleteAll" onClick={handleDelAll}>Delete All</button>}	
+			{ isDuplicate &&
+				<div className="popup">
+					<h4>Dulicate Time</h4>
+				</div>
+			}
 		</div>
-		);
+	);
 }
 
 
