@@ -1,0 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500&display=swap');
+
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body{
+	font-family: 'Urbanist', sans-serif;
+	background-color: #060822;
+	font-weight: 400;
+}
+
+.container{
+	width: 100%;
+	max-width: 420px;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 10px;
+	padding-top: 4rem;
+	position: relative;
+}
+.title{
+	color: #fff;
+	text-align: center;
+	margin-bottom: 1rem;
+}
+.timeList{
+	list-style-type: none;
+	margin: 0;
+
+}
+.timeList>li{
+	padding: 10px 10px;
+	margin-bottom: .65rem;
+	background-color: #00c3ff;
+	border-radius: 2px;
+	letter-spacing: 1px;
+	position: relative;
+}
+.timeList>li.timeBreak{
+	margin-bottom: 1.5rem;
+}
+.timeList>li.totalRecMin{
+	background-color: #dbf904;
+}
+
+.timeList>li .slotBt{
+	display: inline-block;
+	background-color: #dbf904;
+	padding: 5px;
+	border-radius: 2px;
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
+.action{
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+	display: inline-block;
+	background-color: #060822;
+	padding: 5px;
+	color: #fff;
+	border-radius: 3px;
+	font-size: 12px;
+}
+.btn{
+	padding: 10px 35px;
+	border: 0;
+	border-radius: 5px;
+	font-size: 16px;
+	width: 100%;
+	font-weight: 500;
+	letter-spacing: 2px;
+	margin-bottom: 1rem;
+	cursor: pointer;
+}
+.btn-group .add{
+	background-color: #50ff00;
+}
+.deleteAll{
+	background-color: red;
+	padding: 10px 45px;
+	color: #fff;
+	border-radius: 3px;
+	border: 0;
+	width: 100%;
+	font-size: 15px;
+	margin-top: 4rem;
+}
+.alert{
+	padding: 15px;
+	background-color: #ff3000;
+	margin-bottom: 1rem;
+}
+.timeCounter{
+	width: 60px;
+	height: 60px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 1rem;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 16px;
+	font-weight: 500;
+	background-color: #dbf904;
+	border: 1px solid red;
+	position: relative;
+}
+.timeCounter .sec{
+	position: absolute;
+	top: 5px;
+	right: 7px;
+	font-size: 12px;
+}
+.total{
+	color: #fff;
+	margin-bottom: 5px;
+	font-size: 20px;
+}
+.timer{
+	position: fixed;
+	right: 0;
+	top: 40%;
+	color: #000;
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #dbf904;
+	border: 2px solid #00c3ff; 
+	font-weight: 500;
+}
+.approaxTime{
+	color: red;
+	font-weight: 400;
+	font-size: 14px;
+	margin-bottom: 10px;
+}
+
+.popup{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, .95);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;
+	color: #fff;
+}
+
+.editScreen{
+	width: 100%;
+	padding: 15px;
+	background-color: #3e3f51;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 10;
+}
+.timeTitle{
+	color: #fff;
+	font-weight: 700;
+	font-size: 16px;
+}
+.timesWrpr{
+	display: flex;
+	color: #dbf904;
+}
+.timesWrpr label{
+	margin-right: 10px;
+}
+.formControl{
+	padding: 5px 10px;
+	border: 1px solid #111;
+	width: 150px;
+	margin-left: auto;
+}
+
+.timeList>li.totalRecMin::after{
+	content: '';
+	clear: both;
+	display: block;
+}
+.totalRecMin .btn{
+	float: right;
+	width: 30px;
+	padding: 10px;
+	margin-right: 5px;
+	font-size: 10px;
+}
