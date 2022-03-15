@@ -66,6 +66,10 @@ body{
 	border-radius: 3px;
 	font-size: 12px;
 }
+.action.del{
+	background-color: #ff3000;
+	right: 30px;
+}
 .btn{
 	padding: 10px 35px;
 	border: 0;
@@ -88,7 +92,7 @@ body{
 	border: 0;
 	width: 100%;
 	font-size: 15px;
-	margin-top: 4rem;
+	margin-top: 2rem;
 }
 .alert{
 	padding: 15px;
@@ -186,7 +190,6 @@ body{
 .formControl{
 	padding: 5px 10px;
 	border: 1px solid #111;
-	width: 150px;
 	margin-left: auto;
 }
 

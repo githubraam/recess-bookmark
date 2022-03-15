@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { TimeContext } from "../context/TimeContext";
+import EditList from "./Edit";
+import TimeSlots from "./TimeSlots";
 
 const parseTimes = () =>{
 	if (localStorage.getItem('localTime')) {
@@ -19,9 +22,12 @@ const getLocalStartId = () =>{
 }
 
 const List = () =>{
+	//getting variable from TimeContext, destructuring
+	const {startId,setStartId, isEdit, times, setTimes, sureDelTime} = useContext(TimeContext)
 
-	const [times, setTimes] = useState([])
-	const [startId, setStartId] = useState()
+
+	
+	
 
 	const startRecess = () =>{
 		/*setMinutes(0);
@@ -30,7 +36,7 @@ const List = () =>{
 
 		// creating fresh array with start times
 		const newTimeArray = {
-			id: new Date().getTime(), timeSlotTotal: '', start: {hr: new Date().getHours(), min: new Date().getMinutes()}, end: {} 
+			id: new Date().getTime(), timeSlotTotal: 0, start: {hr: new Date().getHours(), min: new Date().getMinutes()}, end: {} 
 		}
 
 		setStartId(newTimeArray.id);
@@ -64,36 +70,42 @@ const List = () =>{
 		{id: '125', start: {hr: 10, min: 49}, end: {hr: 10, min: 50} }
 	] */
 
+	
 
-	return(
-		<div className="container">
-            <h1 className="title">Record Your Recess</h1>
-            <h2 className="total">#Time Consumed: 0 min </h2>
-            <h3 className="approaxTime">Consumed Till Now: 0 min (Approx)</h3>
-            <div className="btn-group">
-				{startId ? <button className="btn stop" onClick={()=>{stopRecess()}}>Stop</button> : <button className="btn add" onClick={startRecess}>Start</button>}
+	if(isEdit){
+		return <EditList />
+	}
+	else{
+		return(
+			<>
+			<div className="container">
+				<h1 className="title">Record Your Recess</h1>
+				<h2 className="total">#Time Consumed: 0 min </h2>
+				<h3 className="approaxTime">Consumed Till Now: 0 min (Approx)</h3>
+				<div className="btn-group">
+					{startId ? <button className="btn stop" onClick={()=>{stopRecess()}}>Stop</button> : <button className="btn add" onClick={startRecess}>Start</button>}
+					
+					
+				</div>
 				
-				
+
+				<ul className="timeList">
+					
+
+					<TimeSlots />
+					
+				</ul>
+				<button className="deleteAll">Delete All</button>
 			</div>
-            
 
-            <ul className="timeList">
-                {/*<li className="totalRecMin">Counting total Min </li>*/}
+			{/* {sureDelTime && <div className="popup">
+				Are you sure? want to delete time slot!
+			</div>} */}
+			</>
 
-                {
-                	times.map((time) => <li className="timeBreak" key={time.id} >
-						<span style={slot}>Start: {time.start.hr}hr {time.start.min}min</span>
-						<span style={slot}>End: {time.end.hr}hr {time.end.min}min</span>
-						{time.timeSlotTotal && <span className="slotBt">BT {time.timeSlotTotal} min</span>} <span className="action">E</span></li>   )
-                }
-                
-            </ul>
-            <button className="deleteAll">Delete All</button>
-        </div>
-	)
+			
+		)
+	}
 }
-const slot = {
-	display: 'block',
-	padding: '5px'
-}
+
 export default List;
