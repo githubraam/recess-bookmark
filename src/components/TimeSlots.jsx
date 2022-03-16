@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { TimeContext } from "../context/TimeContext";
 
 const TimeSlots = () =>{
-    const {times, setTimes,setIsEdit,setTempTime,setStartId, sureDelTime, setSureDelTime} = useContext(TimeContext)
+    const {times, setTimes,setIsEdit,setTempTime,setStartId, startId, setSureDelTime, confirmDel, setConfirmDel} = useContext(TimeContext)
     
     const [delId, setDelId] = useState('');
 
@@ -18,22 +18,26 @@ const TimeSlots = () =>{
 	}
 
     const delTimeSlot = (id) =>{
-        setSureDelTime(true);
-        setDelId(id)
+        if(startId==''){
+            setSureDelTime(true);
+            setDelId(id)
+        }else{alert('Stop the Time first')}
        
     }
 
     useEffect(()=>{
-        if (sureDelTime) {
+        if (confirmDel) {
             const newTimes = times.filter((time)=>{
                 return time.id!== delId;
             })
 
             setTimes(newTimes);
-            setSureDelTime(false)
+            setSureDelTime(false);
+            setConfirmDel(false)
+            setDelId('');
         }
         
-    },[sureDelTime])
+    },[confirmDel])
 
 
     return(

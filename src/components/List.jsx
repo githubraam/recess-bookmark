@@ -3,37 +3,24 @@ import { TimeContext } from "../context/TimeContext";
 import EditList from "./Edit";
 import TimeSlots from "./TimeSlots";
 
-const parseTimes = () =>{
-	if (localStorage.getItem('localTime')) {
-		return JSON.parse(localStorage.getItem('localTime'));
-	}
-	else{
-		return [];
-	}
-}
-
-const getLocalStartId = () =>{
-	if (localStorage.getItem('lstartId')) {
-		return localStorage.getItem('lstartId');
-	}
-	else{
-		return '';
-	}
-}
-
 const List = () =>{
 	//getting variable from TimeContext, destructuring
-	const {startId,setStartId, isEdit, times, setTimes, sureDelTime} = useContext(TimeContext)
+	const {startId,setStartId, isEdit, times, setTimes, setSureDelTime, sureDelTime, setConfirmDel} = useContext(TimeContext)
 
+	const [isDelAll, setIsDelAll] = useState(false);
+	const [yesDelAll,setYesDelAll] = useState(false);
 
+	useEffect(()=>{
+		if(yesDelAll){
+			setTimes([]);
+			setYesDelAll(false);
+			setIsDelAll(false)
+		}
+	},[yesDelAll])
 	
 	
 
 	const startRecess = () =>{
-		/*setMinutes(0);
-		setSeconds(0);
-		*/
-
 		// creating fresh array with start times
 		const newTimeArray = {
 			id: new Date().getTime(), timeSlotTotal: 0, start: {hr: new Date().getHours(), min: new Date().getMinutes()}, end: {} 
@@ -42,35 +29,36 @@ const List = () =>{
 		setStartId(newTimeArray.id);
 		 
 		setTimes([...times,newTimeArray]);
-/*
-		setStartTimeId(newTimeArray.id); */
+
 	
 			
 	}
 
 	const stopRecess = () =>{
-		console.log(times)
+		//console.log(startId)
 		times.forEach((time,index)=>{
-			if(time.id === startId) {
+			if(time.id === parseInt(startId)) {
 				let emin = new Date().getMinutes(), ehr = new Date().getHours();
+				
 				//calculate total recess in a single time gap
 				let totalSlotTime = parseInt(emin) - parseInt(time.start.min);
 
 				setTimes([...times],time.timeSlotTotal=totalSlotTime, time.end.hr = ehr, time.end.min = emin)
 
-				setStartId(null)
+				setStartId('')
 			}
 		})
 		
 	}
 
-	/* const checkTime = [
-		{id: '123', start: {hr: 10, min: 45}, end: {hr: 10, min: 46} },
-		{id: '124', start: {hr: 10, min: 47}, end: {hr: 10, min: 48} },
-		{id: '125', start: {hr: 10, min: 49}, end: {hr: 10, min: 50} }
-	] */
 
-	
+	useEffect(()=>{
+		localStorage.setItem('localTime',JSON.stringify(times));
+		localStorage.setItem('lstartId',startId);
+	},[times,startId])
+
+
+
 
 	if(isEdit){
 		return <EditList />
@@ -95,12 +83,27 @@ const List = () =>{
 					<TimeSlots />
 					
 				</ul>
-				<button className="deleteAll">Delete All</button>
+				{startId=='' && times.length>0 && <button className="deleteAll" onClick={()=>setIsDelAll(true)}>Delete All</button>}
 			</div>
 
-			{/* {sureDelTime && <div className="popup">
-				Are you sure? want to delete time slot!
-			</div>} */}
+			{sureDelTime && <div className="popup" style={{padding: '20px'}}>
+				<p style={{padding: '15px', fontSize: '20px'}}>Are you sure? <br/>want to delete time slot!</p>
+				<div className="btn-group">
+					<button className="btn add" onClick={()=>setConfirmDel(true)}>Yes</button>
+					<button style={{marginTop: '10px'}} className="deleteAll" onClick={()=>setSureDelTime(false)}>No</button>
+				</div>
+				
+			</div>}
+
+
+			{isDelAll && <div className="popup" style={{padding: '20px'}}>
+				<p style={{padding: '15px', fontSize: '20px'}}>Are you sure? <br/>want to delete ALL time slot!</p>
+				<div className="btn-group">
+					<button className="btn add" onClick={()=>setYesDelAll(true)}>Yes</button>
+					<button style={{marginTop: '10px'}} className="deleteAll" onClick={()=>setIsDelAll(false)}>No</button>
+				</div>
+				
+			</div>}
 			</>
 
 			

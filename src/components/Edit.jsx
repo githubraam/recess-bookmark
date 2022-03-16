@@ -22,8 +22,6 @@ const EditList = () =>{
 
     const updateTime = () =>{
 
-       /*  setTempTime([...tempTime],updatedTime.start.hr = updatedTime.start.hr, updatedTime.start.min = updatedTime.start.min, updatedTime.end.hr = updatedTime.end.hr, updatedTime.end.min = updatedTime.end.min) */
-
         times.forEach(time => {
             if(time.id === startId){
                 
