@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { TimeContext } from "../context/TimeContext";
 
-const TimeSlots = () =>{
+const TimeSlots = (props) =>{
     const {times, setTimes,setIsEdit,setTempTime,setStartId, startId, setSureDelTime, confirmDel, setConfirmDel} = useContext(TimeContext)
     
     const [delId, setDelId] = useState('');
@@ -21,7 +21,7 @@ const TimeSlots = () =>{
         if(startId==''){
             setSureDelTime(true);
             setDelId(id)
-        }else{alert('Stop the Time first')}
+        }else{alert('You need to stop TIMER first')}
        
     }
 
@@ -45,7 +45,7 @@ const TimeSlots = () =>{
         times.map((time) => <li className="timeBreak" key={time.id} >
                     <span style={slot}>Start: {time.start.hr}hr {time.start.min}min</span>
                     <span style={slot}>End: {time.end.hr}hr {time.end.min}min</span>
-                    {time.timeSlotTotal!=='' && <span className="slotBt">BT {time.timeSlotTotal} min</span>
+                    {time.timeSlotTotal!=='' && <span className="slotBt">Total {time.totalSlotHr}H {time.timeSlotTotal}M</span>
                     }
                     {time.end.min &&
                     <React.Fragment>

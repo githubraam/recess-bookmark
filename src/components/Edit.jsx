@@ -6,8 +6,12 @@ const EditList = () =>{
     const {tempTime, setTempTime, isEdit, setIsEdit, setTimes, times, startId,setStartId}  = useContext(TimeContext)
 
     const [updatedTime, setUpdatedTime] = useState({
-        start:{hr: tempTime[0].start.hr, min: tempTime[0].start.min},
-        end:{hr: tempTime[0].end.hr, min: tempTime[0].end.min}
+        start:{
+            hr: tempTime[0].start.hr,
+            min: tempTime[0].start.min},
+        end:{
+            hr: tempTime[0].end.hr,
+            min: tempTime[0].end.min}
     })
 
 
@@ -24,10 +28,37 @@ const EditList = () =>{
 
         times.forEach(time => {
             if(time.id === startId){
-                
-                let totalSlotTime = parseInt(updatedTime.end.min) - parseInt(updatedTime.start.min);
 
-                setTimes([...times],time.start.hr = updatedTime.start.hr,time.start.min = updatedTime.start.min,time.start.hr = updatedTime.end.hr,time.end.min = updatedTime.end.min, time.timeSlotTotal=totalSlotTime)
+                //calculate total recess in a single time gap
+                let totalSlotMin = 0;
+                let totalSlotHr = 0;
+
+                if(updatedTime.end.min<updatedTime.start.min){
+                    totalSlotMin += (60 - updatedTime.start.min) + updatedTime.end.min
+                }
+                else{
+                    totalSlotMin += updatedTime.end.min - updatedTime.start.min;
+                }
+
+                // calculate hour
+				if(updatedTime.end.hr<updatedTime.start.hr){
+                    totalSlotHr += (24 - updatedTime.start.hr) + updatedTime.end.hr
+                }
+                else{
+                    totalSlotHr += updatedTime.end.hr - time.start.hr;
+                }
+                
+                
+
+                setTimes(
+                        [...times],
+                        time.start.hr = updatedTime.start.hr,
+                        time.start.min = updatedTime.start.min,
+                        time.end.hr = updatedTime.end.hr,
+                        time.end.min = updatedTime.end.min, 
+                        time.timeSlotTotal=totalSlotMin,
+                        time.totalSlotHr=totalSlotHr
+                    )
                 setEditSuccess(true)
             }
         });
@@ -60,7 +91,6 @@ const EditList = () =>{
                     <select className="formControl" 
                     value={updatedTime.start.hr} 
                     onChange={(e)=>{setUpdatedTime({...updatedTime},updatedTime.start.hr=parseInt(e.target.value))}}>
-                        <option value="0">0hr</option>
                         <option value="1">1hr</option>
                         <option value="2">2hr</option>
                         <option value="3">3hr</option>
@@ -157,7 +187,6 @@ const EditList = () =>{
                     value={updatedTime.end.hr} 
                     onChange={(e)=>{setUpdatedTime({...updatedTime},updatedTime.end.hr=parseInt(e.target.value))}}
                     >
-                        <option value="0">0hr</option>
                         <option value="1">1hr</option>
                         <option value="2">2hr</option>
                         <option value="3">3hr</option>

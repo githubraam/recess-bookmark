@@ -10,6 +10,9 @@ const List = () =>{
 	const [isDelAll, setIsDelAll] = useState(false);
 	const [yesDelAll,setYesDelAll] = useState(false);
 
+	const [consumedMin, setConsumedMin] = useState(0);
+	const [totalHr, setTotalHr] = useState(0);
+
 	useEffect(()=>{
 		if(yesDelAll){
 			setTimes([]);
@@ -23,15 +26,11 @@ const List = () =>{
 	const startRecess = () =>{
 		// creating fresh array with start times
 		const newTimeArray = {
-			id: new Date().getTime(), timeSlotTotal: 0, start: {hr: new Date().getHours(), min: new Date().getMinutes()}, end: {} 
+			id: new Date().getTime(), timeSlotTotal: 0, totalSlotHr:0, start: {hr: new Date().getHours(), min: new Date().getMinutes()}, end: {} 
 		}
 
 		setStartId(newTimeArray.id);
-		 
 		setTimes([...times,newTimeArray]);
-
-	
-			
 	}
 
 	const stopRecess = () =>{
@@ -39,11 +38,28 @@ const List = () =>{
 		times.forEach((time,index)=>{
 			if(time.id === parseInt(startId)) {
 				let emin = new Date().getMinutes(), ehr = new Date().getHours();
-				
-				//calculate total recess in a single time gap
-				let totalSlotTime = parseInt(emin) - parseInt(time.start.min);
 
-				setTimes([...times],time.timeSlotTotal=totalSlotTime, time.end.hr = ehr, time.end.min = emin)
+				//calculate total recess in a single time gap
+				let totalSlotMin = 0;
+				let totalSlotHr = 0;
+				
+				//calculate min
+                if(emin<time.start.min){
+                    totalSlotMin += (60 - time.start.min) + emin
+                }
+                else{
+                    totalSlotMin += emin - time.start.min;
+                }
+
+				// calculate hour
+				if(ehr<time.start.hr){
+                    totalSlotHr += (24 - time.start.hr) + ehr
+                }
+                else{
+                    totalSlotHr += ehr - time.start.hr;
+                }
+
+				setTimes([...times],time.timeSlotTotal=totalSlotMin, totalSlotHr = totalSlotHr, time.end.hr = ehr, time.end.min = emin)
 
 				setStartId('')
 			}
@@ -55,6 +71,20 @@ const List = () =>{
 	useEffect(()=>{
 		localStorage.setItem('localTime',JSON.stringify(times));
 		localStorage.setItem('lstartId',startId);
+		let totalMin = 0;
+		let totalHr = 0;
+		//let endHr = null
+		times.forEach((time)=>{		
+			
+
+			//calculate Min
+			totalMin +=time.timeSlotTotal
+			totalHr +=time.totalSlotHr
+			
+			
+		})
+		setConsumedMin(totalMin)
+		setTotalHr(totalHr)
 	},[times,startId])
 
 
@@ -68,8 +98,8 @@ const List = () =>{
 			<>
 			<div className="container">
 				<h1 className="title">Record Your Recess</h1>
-				<h2 className="total">#Time Consumed: 0 min </h2>
-				<h3 className="approaxTime">Consumed Till Now: 0 min (Approx)</h3>
+				<h2 className="total">#Time Consumed: {totalHr}Hr {consumedMin}min </h2>
+				{/* <h3 className="approaxTime">Consumed Till Now: 0 min (Approx)</h3> */}
 				<div className="btn-group">
 					{startId ? <button className="btn stop" onClick={()=>{stopRecess()}}>Stop</button> : <button className="btn add" onClick={startRecess}>Start</button>}
 					
