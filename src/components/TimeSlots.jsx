@@ -43,8 +43,8 @@ const TimeSlots = (props) =>{
     return(
         
         times.map((time) => <li className="timeBreak" key={time.id} >
-                    <span style={slot}>Start: {time.start.hr}hr {time.start.min}min</span>
-                    <span style={slot}>End: {time.end.hr}hr {time.end.min}min</span>
+                    <span style={slot}>Start: {time.start.hr}hr {time.start.min}min {time.start.sec}sec</span>
+                    <span style={slot}>End: {time.end.hr}hr {time.end.min}min {time.end.sec}sec</span>
                     {time.timeSlotTotal!=='' && <span className="slotBt">Total {time.totalSlotHr}H {time.timeSlotTotal}M</span>
                     }
                     {time.end.min &&
