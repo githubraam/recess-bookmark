@@ -24,13 +24,28 @@ const List = () =>{
 	
 
 	const startRecess = () =>{
+		// checking if lastRecordDate not exist
+		if( !localStorage.getItem('lastRecordDate') ){
+
+			if(currentTimeSet[0].info[0].lastRecordDate){
+				// last record date exist save it to localstorage
+				localStorage.setItem('lastRecordDate',`${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`);
+			}
+			else{
+				// first store current date in times then create localstorage
+				currentTimeSet[0].info[0].lastRecordDate = `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`;
+				localStorage.setItem('lastRecordDate',`${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`);
+			}
+		}
+		
+			
 		// creating fresh array with start times
 		const newTimeArray = {
 			id: new Date().getTime(), timeSlotTotal: 0, totalSlotHr:0, start: {hr: new Date().getHours(), min: new Date().getMinutes(), sec: new Date().getSeconds()}, end: {} 
 		}
 
 		setStartId(newTimeArray.id);
-		setCurrentTimeSet([...currentTimeSet,newTimeArray]);
+		setCurrentTimeSet([...currentTimeSet,currentTimeSet[0].data.newTimeArray]);
 	}
 
 	const stopRecess = () =>{
@@ -61,7 +76,7 @@ const List = () =>{
                     totalSlotHr += ehr - time.start.hr;
                 }
 
-				setTimes([...times],time.timeSlotTotal=totalSlotMin, totalSlotHr = totalSlotHr, time.end.hr = ehr, time.end.min = emin,  time.end.sec = esec)
+				setCurrentTimeSet([...currentTimeSet],currentTimeSet.timeSlotTotal=totalSlotMin, totalSlotHr = totalSlotHr, currentTimeSet.end.hr = ehr, currentTimeSet.end.min = emin,  currentTimeSet.end.sec = esec)
 
 				setStartId('')
 			}
