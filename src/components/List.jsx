@@ -5,7 +5,7 @@ import TimeSlots from "./TimeSlots";
 
 const List = () =>{
 	//getting variable from TimeContext, destructuring
-	const {startId,setStartId, isEdit, times, setTimes, setSureDelTime, sureDelTime, setConfirmDel} = useContext(TimeContext)
+	const {startId,setStartId, isEdit, times, setTimes, setSureDelTime, sureDelTime, setConfirmDel, setCurrentTimeSet, currentTimeSet} = useContext(TimeContext)
 
 	const [isDelAll, setIsDelAll] = useState(false);
 	const [yesDelAll,setYesDelAll] = useState(false);
@@ -26,18 +26,20 @@ const List = () =>{
 	const startRecess = () =>{
 		// creating fresh array with start times
 		const newTimeArray = {
-			id: new Date().getTime(), timeSlotTotal: 0, totalSlotHr:0, start: {hr: new Date().getHours(), min: new Date().getMinutes()}, end: {} 
+			id: new Date().getTime(), timeSlotTotal: 0, totalSlotHr:0, start: {hr: new Date().getHours(), min: new Date().getMinutes(), sec: new Date().getSeconds()}, end: {} 
 		}
 
 		setStartId(newTimeArray.id);
-		setTimes([...times,newTimeArray]);
+		setCurrentTimeSet([...currentTimeSet,newTimeArray]);
 	}
 
 	const stopRecess = () =>{
 		//console.log(startId)
-		times.forEach((time,index)=>{
+		currentTimeSet.forEach((time,index)=>{
 			if(time.id === parseInt(startId)) {
-				let emin = new Date().getMinutes(), ehr = new Date().getHours();
+				let emin = new Date().getMinutes(), 
+				ehr = new Date().getHours(),
+				esec = new Date().getSeconds();
 
 				//calculate total recess in a single time gap
 				let totalSlotMin = 0;
@@ -59,7 +61,7 @@ const List = () =>{
                     totalSlotHr += ehr - time.start.hr;
                 }
 
-				setTimes([...times],time.timeSlotTotal=totalSlotMin, totalSlotHr = totalSlotHr, time.end.hr = ehr, time.end.min = emin)
+				setTimes([...times],time.timeSlotTotal=totalSlotMin, totalSlotHr = totalSlotHr, time.end.hr = ehr, time.end.min = emin,  time.end.sec = esec)
 
 				setStartId('')
 			}
