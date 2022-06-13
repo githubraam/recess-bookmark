@@ -27,6 +27,10 @@ body{
 	margin-bottom: 1rem;
 	font-size: 1.5rem;
 }
+.title .date{
+	font-size: 13px;
+	display: block;
+}
 .timeList{
 	list-style-type: none;
 	margin: 0;

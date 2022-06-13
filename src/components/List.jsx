@@ -15,7 +15,7 @@ const List = () =>{
 
 	useEffect(()=>{
 		if(yesDelAll){
-			setTimes([]);
+			setCurrentTimeSet({...currentTimeSet,data:[]});
 			setYesDelAll(false);
 			setIsDelAll(false)
 		}
@@ -27,13 +27,13 @@ const List = () =>{
 		// checking if lastRecordDate not exist
 		if( !localStorage.getItem('lastRecordDate') ){
 
-			if(currentTimeSet[0].info[0].lastRecordDate){
+			if(currentTimeSet.info.lastRecordDate){
 				// last record date exist save it to localstorage
 				localStorage.setItem('lastRecordDate',`${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`);
 			}
 			else{
 				// first store current date in times then create localstorage
-				currentTimeSet[0].info[0].lastRecordDate = `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`;
+				currentTimeSet.info.lastRecordDate = `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`;
 				localStorage.setItem('lastRecordDate',`${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`);
 			}
 		}
@@ -45,38 +45,26 @@ const List = () =>{
 		}
 
 		setStartId(newTimeArray.id);
-		setCurrentTimeSet([...currentTimeSet,currentTimeSet[0].data.newTimeArray]);
+		setCurrentTimeSet( {...currentTimeSet,data:[...currentTimeSet.data,newTimeArray]} )
+		//console.log(currentTimeSet)
+		//setCurrentTimeSet([...currentTimeSet,currentTimeSet.data.newTimeArray]);
 	}
 
 	const stopRecess = () =>{
 		//console.log(startId)
-		currentTimeSet.forEach((time,index)=>{
+		currentTimeSet.data.forEach((time,index)=>{
 			if(time.id === parseInt(startId)) {
-				let emin = new Date().getMinutes(), 
-				ehr = new Date().getHours(),
-				esec = new Date().getSeconds();
 
-				//calculate total recess in a single time gap
-				let totalSlotMin = 0;
-				let totalSlotHr = 0;
-				
-				//calculate min
-                if(emin<time.start.min){
-                    totalSlotMin += (60 - time.start.min) + emin
-                }
-                else{
-                    totalSlotMin += emin - time.start.min;
-                }
+				setCurrentTimeSet(
+					{...currentTimeSet},
+					/* currentTimeSet.data[index].timeSlotTotal=totalSlotMin,
+					currentTimeSet.data[index].totalSlotHr = totalSlotHr, */
+					currentTimeSet.data[index].end.hr = new Date().getHours(),
+					currentTimeSet.data[index].end.min = new Date().getMinutes(),
+					currentTimeSet.data[index].end.sec = new Date().getSeconds()
 
-				// calculate hour
-				if(ehr<time.start.hr){
-                    totalSlotHr += (24 - time.start.hr) + ehr
-                }
-                else{
-                    totalSlotHr += ehr - time.start.hr;
-                }
+				)
 
-				setCurrentTimeSet([...currentTimeSet],currentTimeSet.timeSlotTotal=totalSlotMin, totalSlotHr = totalSlotHr, currentTimeSet.end.hr = ehr, currentTimeSet.end.min = emin,  currentTimeSet.end.sec = esec)
 
 				setStartId('')
 			}
@@ -86,23 +74,19 @@ const List = () =>{
 
 
 	useEffect(()=>{
-		localStorage.setItem('localTime',JSON.stringify(times));
+		localStorage.setItem('localTime',JSON.stringify(currentTimeSet));
 		localStorage.setItem('lstartId',startId);
 		let totalMin = 0;
 		let totalHr = 0;
 		//let endHr = null
-		times.forEach((time)=>{		
-			
-
+		currentTimeSet.data.forEach((time)=>{		
 			//calculate Min
 			totalMin +=time.timeSlotTotal
 			totalHr +=time.totalSlotHr
-			
-			
 		})
 		setConsumedMin(totalMin)
 		setTotalHr(totalHr)
-	},[times,startId])
+	},[currentTimeSet,startId]) //
 
 
 
@@ -114,7 +98,7 @@ const List = () =>{
 		return(
 			<>
 			<div className="container">
-				<h1 className="title">Record Your Recess</h1>
+				<h1 className="title">Record Your Recess <span className="date">10/5/2022</span></h1>
 				<h2 className="total">#Time Consumed: {totalHr}Hr {consumedMin}min </h2>
 				{/* <h3 className="approaxTime">Consumed Till Now: 0 min (Approx)</h3> */}
 				<div className="btn-group">
@@ -127,10 +111,10 @@ const List = () =>{
 				<ul className="timeList">
 					
 
-					<TimeSlots />
+					{<TimeSlots />}
 					
 				</ul>
-				{startId=='' && times.length>0 && <button className="deleteAll" onClick={()=>setIsDelAll(true)}>Delete All</button>}
+				{startId=='' && currentTimeSet.data.length>0 && <button className="deleteAll" onClick={()=>setIsDelAll(true)}>Delete All</button>}
 			</div>
 
 			{sureDelTime && <div className="popup" style={{padding: '20px'}}>

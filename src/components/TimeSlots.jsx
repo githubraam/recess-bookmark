@@ -39,13 +39,49 @@ const TimeSlots = (props) =>{
         
     },[confirmDel])
 
-    if( currentTimeSet[0].data.length ){
+    if( currentTimeSet.data  ){
         return(
         
-        currentTimeSet[0].data.map((time) => <li className="timeBreak" key={time.id} >
+        currentTimeSet.data.map((time,index) => {
+            let emin = time.end.min, 
+				ehr = time.end.hr,
+				esec = time.end.sec;
+
+				//calculate total recess in a single time gap
+				let totalSlotSec = 0,totalSlotMin = 0,totalSlotHr = 0;
+
+
+				// calculate hour
+				if(ehr<time.start.hr){
+                    totalSlotHr += (24 - time.start.hr) + ehr
+                }
+                else{
+                    totalSlotHr += ehr - time.start.hr;
+                }
+				
+				//calculate min
+                if(emin<time.start.min){
+                    totalSlotMin += (60 - time.start.min) + emin
+                }
+                else{
+                    totalSlotMin += emin - time.start.min;
+                }
+
+                //calculate sec
+                if(esec < time.start.sec){
+                    
+                    totalSlotSec = ((60 - time.start.sec) + time.end.sec)
+                   
+                }
+                else{
+                    totalSlotSec = esec - time.start.sec;
+                }
+
+
+                return <li className="timeBreak" key={index} >
                     <span style={slot}>Start: {time.start.hr}hr {time.start.min}min {time.start.sec}sec</span>
                     <span style={slot}>End: {time.end.hr}hr {time.end.min}min {time.end.sec}sec</span>
-                    {time.timeSlotTotal!=='' && <span className="slotBt">Total {time.totalSlotHr}H {time.timeSlotTotal}M</span>
+                    {time.timeSlotTotal!=='' && <span className="slotBt">Total {totalSlotHr}H {totalSlotMin}M {totalSlotSec}S</span>
                     }
                     {time.end.min &&
                     <React.Fragment>
@@ -53,8 +89,10 @@ const TimeSlots = (props) =>{
                     <span onClick={()=>{editTimeSlot(time.id)}} className="action">E</span>
                     </React.Fragment>
                     }
-                    </li>
-                )
+                </li>
+            
+            }
+        )
 
     )
     }
