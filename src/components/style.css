@@ -210,3 +210,60 @@ body{
 	margin-right: 5px;
 	font-size: 10px;
 }
+.toggler > span{
+	display: none;
+}
+.toggler{
+	background-color: rgb(204, 202, 202);
+	width: 25px;
+	height: 2px;
+	border: none;
+	position: absolute;
+	right: 10px;
+	top: 20px;
+	z-index: 10;
+}
+.toggler::before,
+.toggler::after{
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	height: 2px;
+	background-color: rgb(204, 202, 202);
+}
+
+.toggler::before{
+	top: -6px;
+}
+.toggler::after{
+	bottom: -6px;
+}
+
+.asideSidebar{
+	z-index: 5;
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	max-width: 450px;
+	background-color: rgba(0, 0, 0, .55);
+	backdrop-filter: blur(7px);
+	padding: 35px 15px;
+}
+
+.asideSidebar .dataList{
+	list-style-type: none;
+	padding-left: 0;
+	margin-left: 0;
+	background-color: #016889;
+	padding: 10px;
+	border-radius: 10px;
+	font-size: 14px;
+}
+
+.asideSidebar .dataList .timeBreak{
+	background-color: #04bdfa;
+	margin-bottom: 5px;
+}

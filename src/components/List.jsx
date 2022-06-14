@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { TimeContext } from "../context/TimeContext";
 import EditList from "./Edit";
+import Sidebar from "./sidebar/Sidebar";
 import TimeSlots from "./TimeSlots";
 
 const List = () =>{
@@ -24,36 +25,48 @@ const List = () =>{
 	
 
 	const startRecess = () =>{
+		let todayDate = `${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`;
 		// checking if lastRecordDate not exist
 		if( !localStorage.getItem('lastRecordDate') ){
 
 			if(currentTimeSet.info.lastRecordDate){
 				// last record date exist save it to localstorage
-				localStorage.setItem('lastRecordDate',`${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`);
+				localStorage.setItem('lastRecordDate',todayDate);
 			}
 			else{
 				// first store current date in times then create localstorage
-				currentTimeSet.info.lastRecordDate = `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`;
-				localStorage.setItem('lastRecordDate',`${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`);
+				currentTimeSet.info.lastRecordDate = todayDate;
+				localStorage.setItem('lastRecordDate',todayDate);
 			}
+		}else{
+			if( localStorage.getItem('lastRecordDate') !== todayDate ){
+				currentTimeSet.info.lastRecordDate = todayDate;
+				localStorage.setItem('lastRecordDate',todayDate);
+			}
+			
 		}
 		
 			
 		// creating fresh array with start times
 		const newTimeArray = {
-			id: new Date().getTime(), timeSlotTotal: 0, totalSlotHr:0, start: {hr: new Date().getHours(), min: new Date().getMinutes(), sec: new Date().getSeconds()}, end: {} 
+			id: new Date().getTime(),
+			date: todayDate,
+			start: {hr: new Date().getHours(), 
+			min: new Date().getMinutes(), 
+			sec: new Date().getSeconds()}, 
+			end: {} 
 		}
 
 		setStartId(newTimeArray.id);
 		setCurrentTimeSet( {...currentTimeSet,data:[...currentTimeSet.data,newTimeArray]} )
-		//console.log(currentTimeSet)
-		//setCurrentTimeSet([...currentTimeSet,currentTimeSet.data.newTimeArray]);
 	}
 
 	const stopRecess = () =>{
 		//console.log(startId)
 		currentTimeSet.data.forEach((time,index)=>{
 			if(time.id === parseInt(startId)) {
+
+				
 
 				setCurrentTimeSet(
 					{...currentTimeSet},
@@ -65,12 +78,14 @@ const List = () =>{
 
 				)
 
-
+				// store the data in times for history display
+				setTimes(currentTimeSet.data)
 				setStartId('')
 			}
 		})
 		
 	}
+
 
 
 	useEffect(()=>{
@@ -98,7 +113,11 @@ const List = () =>{
 		return(
 			<>
 			<div className="container">
-				<h1 className="title">Record Your Recess <span className="date">10/5/2022</span></h1>
+				<button className="toggler">
+					<span>click to toggle menu</span>
+				</button>
+				<Sidebar />
+				<h1 className="title">Record Your Recess <span className="date">{`${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`}</span></h1>
 				<h2 className="total">#Time Consumed: {totalHr}Hr {consumedMin}min </h2>
 				{/* <h3 className="approaxTime">Consumed Till Now: 0 min (Approx)</h3> */}
 				<div className="btn-group">

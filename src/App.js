@@ -55,18 +55,17 @@ function App() {
     const [startId, setStartId] = useState(getLocalStartId)
     const [tempTime, setTempTime] = useState({})
     const [isEdit, setIsEdit] = useState(false);
-    // times will be used to store data of all day / show all history
-    const [times, setTimes] = useState(getTimeDataFromLocalStorage)
+    
     const [sureDelTime, setSureDelTime] = useState(false)
     const [confirmDel, setConfirmDel] = useState(false)
+
+    // times will be used to store data of all day / show all history
+    const [times, setTimes] = useState([])
     // curentTimeSet is used to store all current / today's data
     const [currentTimeSet, setCurrentTimeSet] = useState(getTimeDataFromLocalStorage)
-
-    const [prevTimeSet, setPrevTimeSet] = useState([])
-
     
     return (
-        <TimeContext.Provider value={{startId,setStartId, tempTime, setTempTime, isEdit, setIsEdit, times, setTimes, sureDelTime,setSureDelTime, confirmDel, setConfirmDel, currentTimeSet, setCurrentTimeSet, prevTimeSet, setPrevTimeSet}}>
+        <TimeContext.Provider value={{startId,setStartId, tempTime, setTempTime, isEdit, setIsEdit, times, setTimes, sureDelTime,setSureDelTime, confirmDel, setConfirmDel, currentTimeSet, setCurrentTimeSet}}>
         <List />
         </TimeContext.Provider>
     );
