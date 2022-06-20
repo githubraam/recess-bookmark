@@ -244,13 +244,17 @@ body{
 	z-index: 5;
 	position: fixed;
 	top: 0;
-	right: 0;
-	left: 0;
+	right: -150%;
 	bottom: 0;
 	max-width: 450px;
 	background-color: rgba(0, 0, 0, .55);
 	backdrop-filter: blur(7px);
 	padding: 35px 15px;
+	transition: 350ms ease-in-out;
+	overflow: auto;
+}
+.asideSidebar.show{
+	right: 0;
 }
 
 .asideSidebar .dataList{
@@ -261,9 +265,35 @@ body{
 	padding: 10px;
 	border-radius: 10px;
 	font-size: 14px;
+	overflow: auto;
 }
-
+.asideSidebar .dataList .mainDate{
+	background-color: #50ff00;
+	padding: 8px;
+	font-size: 16px;
+	border-radius: 5px;
+	margin-bottom: 8px;
+	font-weight: 600;
+}
 .asideSidebar .dataList .timeBreak{
 	background-color: #04bdfa;
 	margin-bottom: 5px;
+	display: flex;
+	flex-wrap: wrap;
+	padding: 8px;
+	border-radius: 5px;
+}
+.asideSidebar .dataList .timeBreak .start,
+.asideSidebar .dataList .timeBreak .end{
+	width: 100%;
+	font-size: 15px;
+	margin-bottom: 5px;
+}
+.asideSidebar .dataList .timeBreak .slotTotal{
+	width: 100%;
+	text-align: center;
+	margin-top: 4px;
+	background-color: #dbf904;
+	padding: 5px;
+	border-radius: 3px;
 }

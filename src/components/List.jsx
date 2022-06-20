@@ -14,6 +14,8 @@ const List = () =>{
 	const [consumedMin, setConsumedMin] = useState(0);
 	const [totalHr, setTotalHr] = useState(0);
 
+	const [toggleSidebar, setToggleSidebar] = useState(false);
+
 	useEffect(()=>{
 		if(yesDelAll){
 			setCurrentTimeSet({...currentTimeSet,data:[]});
@@ -91,17 +93,17 @@ const List = () =>{
 	useEffect(()=>{
 		localStorage.setItem('localTime',JSON.stringify(currentTimeSet));
 		localStorage.setItem('lstartId',startId);
-		let totalMin = 0;
-		let totalHr = 0;
-		//let endHr = null
-		currentTimeSet.data.forEach((time)=>{		
-			//calculate Min
-			totalMin +=time.timeSlotTotal
-			totalHr +=time.totalSlotHr
-		})
-		setConsumedMin(totalMin)
-		setTotalHr(totalHr)
-	},[currentTimeSet,startId]) //
+
+	},[currentTimeSet,startId])
+
+
+	useEffect(()=>{
+		localStorage.setItem('timeHistory',JSON.stringify(times));
+	},[times])
+
+	const toggleTheSidebar = () =>{
+		setToggleSidebar(!toggleSidebar)
+	}
 
 
 
@@ -113,25 +115,21 @@ const List = () =>{
 		return(
 			<>
 			<div className="container">
-				<button className="toggler">
+				<button className="toggler" type="button" onClick={toggleTheSidebar}>
 					<span>click to toggle menu</span>
 				</button>
-				<Sidebar />
-				<h1 className="title">Record Your Recess <span className="date">{`${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`}</span></h1>
+				{times.length && <Sidebar toggled={toggleSidebar} />}
+				<h1 className="title">Record Your Recess 
+					<span className="date">{`${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`}</span>
+				</h1>
 				<h2 className="total">#Time Consumed: {totalHr}Hr {consumedMin}min </h2>
 				{/* <h3 className="approaxTime">Consumed Till Now: 0 min (Approx)</h3> */}
 				<div className="btn-group">
 					{startId ? <button className="btn stop" onClick={()=>{stopRecess()}}>Stop</button> : <button className="btn add" onClick={startRecess}>Start</button>}
-					
-					
 				</div>
 				
-
 				<ul className="timeList">
-					
-
 					{<TimeSlots />}
-					
 				</ul>
 				{startId=='' && currentTimeSet.data.length>0 && <button className="deleteAll" onClick={()=>setIsDelAll(true)}>Delete All</button>}
 			</div>

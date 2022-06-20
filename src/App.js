@@ -36,6 +36,18 @@ function App() {
             
         }
     }
+
+    const getHistoryFromLocalStorage = () =>{
+        if (localStorage.getItem('timeHistory')) {
+            return JSON.parse(localStorage.getItem('timeHistory'));
+            //let datas = JSON.parse(localStorage.getItem('localTime'));
+            //let dateCompare = datas.filter(data=>data.date = today)
+            //console.log(dateCompare)
+        }
+        else{
+            return []
+        }
+    }
     
     const getLocalStartId = () =>{
         if (localStorage.getItem('lstartId')) {
@@ -60,7 +72,7 @@ function App() {
     const [confirmDel, setConfirmDel] = useState(false)
 
     // times will be used to store data of all day / show all history
-    const [times, setTimes] = useState([])
+    const [times, setTimes] = useState(getHistoryFromLocalStorage)
     // curentTimeSet is used to store all current / today's data
     const [currentTimeSet, setCurrentTimeSet] = useState(getTimeDataFromLocalStorage)
     

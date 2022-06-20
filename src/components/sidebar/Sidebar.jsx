@@ -1,13 +1,14 @@
 import React, { useContext } from "react";
 import { TimeContext } from "../../context/TimeContext";
 
-const Sidebar = () => {
+const Sidebar = (props) => {
     
     const {times} = useContext(TimeContext)
-    return <aside className="asideSidebar">
+    return <aside className={'asideSidebar '+ (props.toggled ? 'show' : 'hide')}>
+
             <ul className="dataList">
                 {
-                times.length && times.map((time,index)=>{
+                times.length && times.map((time,index,arr)=>{
                     let emin = time.end.min, 
 				ehr = time.end.hr,
 				esec = time.end.sec;
@@ -42,12 +43,22 @@ const Sidebar = () => {
                     totalSlotSec = esec - time.start.sec;
                 }
 
-                return <li className="timeBreak" key={index} >
-                    <span>Start: {time.start.hr}hr {time.start.min}min {time.start.sec}sec</span>
-                    <span>End: {time.end.hr}hr {time.end.min}min {time.end.sec}sec</span>
-                    {time.timeSlotTotal!=='' && <span className="slotBt">Total {totalSlotHr}H {totalSlotMin}M {totalSlotSec}S</span>
+                let havePrevDate = true;
+                let previousItem = arr[index - 1];
+                if(index>0 ){
+                    havePrevDate = time.date!==previousItem.date ? true : false;
+                }
+
+
+                return <React.Fragment key={index}>
+                {havePrevDate && <li className="mainDate">{ time.date}</li>}
+                <li className="timeBreak" >
+                    <span className="start">Start: {time.start.hr}hr {time.start.min}min {time.start.sec}sec</span>
+                    <span className="end">End: {time.end.hr}hr {time.end.min}min {time.end.sec}sec</span>
+                    {time.timeSlotTotal!=='' && <span className="slotTotal">{totalSlotHr}H {totalSlotMin}M {totalSlotSec}S</span>
                     }
                 </li>
+                </React.Fragment>
                 }
                 )
                 }
