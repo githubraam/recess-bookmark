@@ -6,6 +6,12 @@ const TimeSlots = (props) =>{
     
     const [delId, setDelId] = useState('');
 
+    // calculate the total output time // all time slots
+    const calculateTotalTime = () =>{
+        let hour, min, sec;
+        
+
+    }
 
     const editTimeSlot = (timeID) =>{
 		setIsEdit(true);

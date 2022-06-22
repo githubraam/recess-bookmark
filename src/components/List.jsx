@@ -6,7 +6,7 @@ import TimeSlots from "./TimeSlots";
 
 const List = () =>{
 	//getting variable from TimeContext, destructuring
-	const {startId,setStartId, isEdit, times, setTimes, setSureDelTime, sureDelTime, setConfirmDel, setCurrentTimeSet, currentTimeSet} = useContext(TimeContext)
+	const {startId,setStartId, isEdit, times, setTimes, setSureDelTime, sureDelTime, setConfirmDel, setCurrentTimeSet, currentTimeSet, totalData} = useContext(TimeContext)
 
 	const [isDelAll, setIsDelAll] = useState(false);
 	const [yesDelAll,setYesDelAll] = useState(false);
@@ -65,7 +65,7 @@ const List = () =>{
 
 	const stopRecess = () =>{
 		//console.log(startId)
-		currentTimeSet.data.forEach((time,index)=>{
+		let lastRecordFound = currentTimeSet.data.filter((time,index)=>{
 			if(time.id === parseInt(startId)) {
 
 				
@@ -80,11 +80,16 @@ const List = () =>{
 
 				)
 
-				// store the data in times for history display
-				setTimes(currentTimeSet.data)
+				
+				
 				setStartId('')
+
+				return time;
 			}
 		})
+
+		// store the data in times for history display
+		setTimes(  times => [...times,lastRecordFound[0]] )
 		
 	}
 
@@ -122,7 +127,7 @@ const List = () =>{
 				<h1 className="title">Record Your Recess 
 					<span className="date">{`${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`}</span>
 				</h1>
-				<h2 className="total">#Time Consumed: {totalHr}Hr {consumedMin}min </h2>
+				<h2 className="total">#Time Consumed: {totalData.hr}HR {totalData.min}M {totalData.sec}S </h2>
 				{/* <h3 className="approaxTime">Consumed Till Now: 0 min (Approx)</h3> */}
 				<div className="btn-group">
 					{startId ? <button className="btn stop" onClick={()=>{stopRecess()}}>Stop</button> : <button className="btn add" onClick={startRecess}>Start</button>}
