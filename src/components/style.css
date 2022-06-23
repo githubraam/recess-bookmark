@@ -60,6 +60,20 @@ body{
 	top: 5px;
 	right: 5px;
 }
+.slotBt.calculating{
+	animation-name: calculating;
+	animation-duration: 1200ms;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+}
+
+@keyframes calculating {
+	to{
+		background-color: #50ff00;
+		opacity: .45;
+	}
+}
+
 .action{
 	position: absolute;
 	bottom: 5px;
