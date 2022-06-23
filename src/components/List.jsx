@@ -40,12 +40,6 @@ const List = () =>{
 				currentTimeSet.info.lastRecordDate = todayDate;
 				localStorage.setItem('lastRecordDate',todayDate);
 			}
-		}else{
-			if( localStorage.getItem('lastRecordDate') !== todayDate ){
-				currentTimeSet.info.lastRecordDate = todayDate;
-				localStorage.setItem('lastRecordDate',todayDate);
-			}
-			
 		}
 		
 			
@@ -88,8 +82,7 @@ const List = () =>{
 			}
 		})
 
-		// store the data in times for history display
-		setTimes(  times => [...times,lastRecordFound[0]] )
+		
 		
 	}
 

@@ -39,7 +39,7 @@ function App() {
     
     const getLocalStartId = () =>{
         if (localStorage.getItem('lstartId')) {
-            console.log(localStorage.getItem('lstartId'));
+
             return localStorage.getItem('lstartId');
             
         }
@@ -47,6 +47,24 @@ function App() {
             return '';
         }
     }
+
+
+    useEffect(()=>{
+        let todayDate = `${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`;
+        if( localStorage.getItem('lastRecordDate') !== todayDate ){
+            
+            setTimes(  times => [...times,...currentTimeSet.data] )
+            setCurrentTimeSet({
+                info:{
+                    lastRecordDate: ""
+                },
+                data:[
+                ]
+            })
+            currentTimeSet.info.lastRecordDate = todayDate;
+            localStorage.setItem('lastRecordDate',todayDate);
+        }
+    },[])
 
 
     
