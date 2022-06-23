@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
 import { TimeContext } from "../context/TimeContext";
 import EditList from "./Edit";
+import Sidebar from "./sidebar/Sidebar";
 import TimeSlots from "./TimeSlots";
 
 const List = () =>{
 	//getting variable from TimeContext, destructuring
-	const {startId,setStartId, isEdit, times, setTimes, setSureDelTime, sureDelTime, setConfirmDel} = useContext(TimeContext)
+	const {startId,setStartId, isEdit, times, setTimes, setSureDelTime, sureDelTime, setConfirmDel, setCurrentTimeSet, currentTimeSet, totalData} = useContext(TimeContext)
 
 	const [isDelAll, setIsDelAll] = useState(false);
 	const [yesDelAll,setYesDelAll] = useState(false);
@@ -13,9 +14,11 @@ const List = () =>{
 	const [consumedMin, setConsumedMin] = useState(0);
 	const [totalHr, setTotalHr] = useState(0);
 
+	const [toggleSidebar, setToggleSidebar] = useState(false);
+
 	useEffect(()=>{
 		if(yesDelAll){
-			setTimes([]);
+			setCurrentTimeSet({...currentTimeSet,data:[]});
 			setYesDelAll(false);
 			setIsDelAll(false)
 		}
@@ -24,68 +27,81 @@ const List = () =>{
 	
 
 	const startRecess = () =>{
+		let todayDate = `${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`;
+		// checking if lastRecordDate not exist
+		if( !localStorage.getItem('lastRecordDate') ){
+
+			if(currentTimeSet.info.lastRecordDate){
+				// last record date exist save it to localstorage
+				localStorage.setItem('lastRecordDate',todayDate);
+			}
+			else{
+				// first store current date in times then create localstorage
+				currentTimeSet.info.lastRecordDate = todayDate;
+				localStorage.setItem('lastRecordDate',todayDate);
+			}
+		}
+		
+			
 		// creating fresh array with start times
 		const newTimeArray = {
-			id: new Date().getTime(), timeSlotTotal: 0, totalSlotHr:0, start: {hr: new Date().getHours(), min: new Date().getMinutes()}, end: {} 
+			id: new Date().getTime(),
+			date: todayDate,
+			start: {hr: new Date().getHours(), 
+			min: new Date().getMinutes(), 
+			sec: new Date().getSeconds()}, 
+			end: {} 
 		}
 
 		setStartId(newTimeArray.id);
-		setTimes([...times,newTimeArray]);
+		setCurrentTimeSet( {...currentTimeSet,data:[...currentTimeSet.data,newTimeArray]} )
 	}
 
 	const stopRecess = () =>{
 		//console.log(startId)
-		times.forEach((time,index)=>{
+		let lastRecordFound = currentTimeSet.data.filter((time,index)=>{
 			if(time.id === parseInt(startId)) {
-				let emin = new Date().getMinutes(), ehr = new Date().getHours();
 
-				//calculate total recess in a single time gap
-				let totalSlotMin = 0;
-				let totalSlotHr = 0;
 				
-				//calculate min
-                if(emin<time.start.min){
-                    totalSlotMin += (60 - time.start.min) + emin
-                }
-                else{
-                    totalSlotMin += emin - time.start.min;
-                }
 
-				// calculate hour
-				if(ehr<time.start.hr){
-                    totalSlotHr += (24 - time.start.hr) + ehr
-                }
-                else{
-                    totalSlotHr += ehr - time.start.hr;
-                }
+				setCurrentTimeSet(
+					{...currentTimeSet},
+					/* currentTimeSet.data[index].timeSlotTotal=totalSlotMin,
+					currentTimeSet.data[index].totalSlotHr = totalSlotHr, */
+					currentTimeSet.data[index].end.hr = new Date().getHours(),
+					currentTimeSet.data[index].end.min = new Date().getMinutes(),
+					currentTimeSet.data[index].end.sec = new Date().getSeconds()
 
-				setTimes([...times],time.timeSlotTotal=totalSlotMin, totalSlotHr = totalSlotHr, time.end.hr = ehr, time.end.min = emin)
+				)
 
+				
+				
 				setStartId('')
+
+				return time;
 			}
 		})
+
+		
 		
 	}
 
 
-	useEffect(()=>{
-		localStorage.setItem('localTime',JSON.stringify(times));
-		localStorage.setItem('lstartId',startId);
-		let totalMin = 0;
-		let totalHr = 0;
-		//let endHr = null
-		times.forEach((time)=>{		
-			
 
-			//calculate Min
-			totalMin +=time.timeSlotTotal
-			totalHr +=time.totalSlotHr
-			
-			
-		})
-		setConsumedMin(totalMin)
-		setTotalHr(totalHr)
-	},[times,startId])
+	useEffect(()=>{
+		localStorage.setItem('localTime',JSON.stringify(currentTimeSet));
+		localStorage.setItem('lstartId',startId);
+
+	},[currentTimeSet,startId])
+
+
+	useEffect(()=>{
+		localStorage.setItem('timeHistory',JSON.stringify(times));
+	},[times])
+
+	const toggleTheSidebar = () =>{
+		setToggleSidebar(!toggleSidebar)
+	}
 
 
 
@@ -97,23 +113,23 @@ const List = () =>{
 		return(
 			<>
 			<div className="container">
-				<h1 className="title">Record Your Recess</h1>
-				<h2 className="total">#Time Consumed: {totalHr}Hr {consumedMin}min </h2>
+				<button className="toggler" type="button" onClick={toggleTheSidebar}>
+					<span>click to toggle menu</span>
+				</button>
+				{times.length && <Sidebar toggled={toggleSidebar} />}
+				<h1 className="title">Record Your Recess 
+					<span className="date">{`${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`}</span>
+				</h1>
+				<h2 className="total">#Time Consumed: {totalData.hr}HR {totalData.min}M {totalData.sec}S </h2>
 				{/* <h3 className="approaxTime">Consumed Till Now: 0 min (Approx)</h3> */}
 				<div className="btn-group">
 					{startId ? <button className="btn stop" onClick={()=>{stopRecess()}}>Stop</button> : <button className="btn add" onClick={startRecess}>Start</button>}
-					
-					
 				</div>
 				
-
 				<ul className="timeList">
-					
-
-					<TimeSlots />
-					
+					{<TimeSlots />}
 				</ul>
-				{startId=='' && times.length>0 && <button className="deleteAll" onClick={()=>setIsDelAll(true)}>Delete All</button>}
+				{startId=='' && currentTimeSet.data.length>0 && <button className="deleteAll" onClick={()=>setIsDelAll(true)}>Delete All</button>}
 			</div>
 
 			{sureDelTime && <div className="popup" style={{padding: '20px'}}>

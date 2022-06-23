@@ -25,11 +25,16 @@ body{
 	color: #fff;
 	text-align: center;
 	margin-bottom: 1rem;
+	font-size: 1.5rem;
+}
+.title .date{
+	font-size: 13px;
+	display: block;
 }
 .timeList{
 	list-style-type: none;
 	margin: 0;
-
+	font-size: 14px;
 }
 .timeList>li{
 	padding: 10px 10px;
@@ -55,6 +60,20 @@ body{
 	top: 5px;
 	right: 5px;
 }
+.slotBt.calculating{
+	animation-name: calculating;
+	animation-duration: 1200ms;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+}
+
+@keyframes calculating {
+	to{
+		background-color: #50ff00;
+		opacity: .45;
+	}
+}
+
 .action{
 	position: absolute;
 	bottom: 5px;
@@ -124,7 +143,7 @@ body{
 .total{
 	color: #fff;
 	margin-bottom: 5px;
-	font-size: 20px;
+	font-size: 18px;
 }
 .timer{
 	position: fixed;
@@ -204,4 +223,91 @@ body{
 	padding: 10px;
 	margin-right: 5px;
 	font-size: 10px;
+}
+.toggler > span{
+	display: none;
+}
+.toggler{
+	background-color: rgb(204, 202, 202);
+	width: 25px;
+	height: 2px;
+	border: none;
+	position: absolute;
+	right: 10px;
+	top: 20px;
+	z-index: 10;
+}
+.toggler::before,
+.toggler::after{
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	height: 2px;
+	background-color: rgb(204, 202, 202);
+}
+
+.toggler::before{
+	top: -6px;
+}
+.toggler::after{
+	bottom: -6px;
+}
+
+.asideSidebar{
+	z-index: 5;
+	position: fixed;
+	top: 0;
+	right: -150%;
+	bottom: 0;
+	max-width: 450px;
+	background-color: rgba(0, 0, 0, .55);
+	backdrop-filter: blur(7px);
+	padding: 35px 15px;
+	transition: 350ms ease-in-out;
+	overflow: auto;
+}
+.asideSidebar.show{
+	right: 0;
+}
+
+.asideSidebar .dataList{
+	list-style-type: none;
+	padding-left: 0;
+	margin-left: 0;
+	background-color: #016889;
+	padding: 10px;
+	border-radius: 10px;
+	font-size: 14px;
+	overflow: auto;
+}
+.asideSidebar .dataList .mainDate{
+	background-color: #50ff00;
+	padding: 8px;
+	font-size: 16px;
+	border-radius: 5px;
+	margin-bottom: 8px;
+	font-weight: 600;
+}
+.asideSidebar .dataList .timeBreak{
+	background-color: #04bdfa;
+	margin-bottom: 5px;
+	display: flex;
+	flex-wrap: wrap;
+	padding: 8px;
+	border-radius: 5px;
+}
+.asideSidebar .dataList .timeBreak .start,
+.asideSidebar .dataList .timeBreak .end{
+	width: 100%;
+	font-size: 15px;
+	margin-bottom: 5px;
+}
+.asideSidebar .dataList .timeBreak .slotTotal{
+	width: 100%;
+	text-align: center;
+	margin-top: 4px;
+	background-color: #dbf904;
+	padding: 5px;
+	border-radius: 3px;
 }
