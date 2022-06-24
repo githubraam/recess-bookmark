@@ -4,68 +4,70 @@ import EditList from "./Edit";
 import Sidebar from "./sidebar/Sidebar";
 import TimeSlots from "./TimeSlots";
 
-const List = () =>{
+const List = () => {
 	//getting variable from TimeContext, destructuring
-	const {startId,setStartId, isEdit, times, setTimes, setSureDelTime, sureDelTime, setConfirmDel, setCurrentTimeSet, currentTimeSet, totalData} = useContext(TimeContext)
+	const { startId, setStartId, isEdit, times, setTimes, setSureDelTime, sureDelTime, setConfirmDel, setCurrentTimeSet, currentTimeSet, totalData } = useContext(TimeContext)
 
 	const [isDelAll, setIsDelAll] = useState(false);
-	const [yesDelAll,setYesDelAll] = useState(false);
+	const [yesDelAll, setYesDelAll] = useState(false);
 
 	const [consumedMin, setConsumedMin] = useState(0);
 	const [totalHr, setTotalHr] = useState(0);
 
 	const [toggleSidebar, setToggleSidebar] = useState(false);
 
-	useEffect(()=>{
-		if(yesDelAll){
-			setCurrentTimeSet({...currentTimeSet,data:[]});
+	useEffect(() => {
+		if (yesDelAll) {
+			setCurrentTimeSet({ ...currentTimeSet, data: [] });
 			setYesDelAll(false);
 			setIsDelAll(false)
 		}
-	},[yesDelAll])
-	
-	
+	}, [yesDelAll])
 
-	const startRecess = () =>{
-		let todayDate = `${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`;
+
+
+	const startRecess = () => {
+		let todayDate = `${new Date().getDate()}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`;
 		// checking if lastRecordDate not exist
-		if( !localStorage.getItem('lastRecordDate') ){
+		if (!localStorage.getItem('lastRecordDate')) {
 
-			if(currentTimeSet.info.lastRecordDate){
+			if (currentTimeSet.info.lastRecordDate) {
 				// last record date exist save it to localstorage
-				localStorage.setItem('lastRecordDate',todayDate);
+				localStorage.setItem('lastRecordDate', todayDate);
 			}
-			else{
+			else {
 				// first store current date in times then create localstorage
 				currentTimeSet.info.lastRecordDate = todayDate;
-				localStorage.setItem('lastRecordDate',todayDate);
+				localStorage.setItem('lastRecordDate', todayDate);
 			}
 		}
-		
-			
+
+
 		// creating fresh array with start times
 		const newTimeArray = {
 			id: new Date().getTime(),
 			date: todayDate,
-			start: {hr: new Date().getHours(), 
-			min: new Date().getMinutes(), 
-			sec: new Date().getSeconds()}, 
-			end: {} 
+			start: {
+				hr: new Date().getHours(),
+				min: new Date().getMinutes(),
+				sec: new Date().getSeconds()
+			},
+			end: {}
 		}
 
 		setStartId(newTimeArray.id);
-		setCurrentTimeSet( {...currentTimeSet,data:[...currentTimeSet.data,newTimeArray]} )
+		setCurrentTimeSet({ ...currentTimeSet, data: [...currentTimeSet.data, newTimeArray] })
 	}
 
-	const stopRecess = () =>{
+	const stopRecess = () => {
 		//console.log(startId)
-		let lastRecordFound = currentTimeSet.data.filter((time,index)=>{
-			if(time.id === parseInt(startId)) {
+		let lastRecordFound = currentTimeSet.data.filter((time, index) => {
+			if (time.id === parseInt(startId)) {
 
-				
+
 
 				setCurrentTimeSet(
-					{...currentTimeSet},
+					{ ...currentTimeSet },
 					/* currentTimeSet.data[index].timeSlotTotal=totalSlotMin,
 					currentTimeSet.data[index].totalSlotHr = totalSlotHr, */
 					currentTimeSet.data[index].end.hr = new Date().getHours(),
@@ -74,85 +76,86 @@ const List = () =>{
 
 				)
 
-				
-				
+
+
 				setStartId('')
 
 				return time;
 			}
 		})
 
-		
-		
+
+
 	}
 
 
 
-	useEffect(()=>{
-		localStorage.setItem('localTime',JSON.stringify(currentTimeSet));
-		localStorage.setItem('lstartId',startId);
+	useEffect(() => {
+		localStorage.setItem('localTime', JSON.stringify(currentTimeSet));
+		localStorage.setItem('lstartId', startId);
 
-	},[currentTimeSet,startId])
+	}, [currentTimeSet, startId])
 
 
-	useEffect(()=>{
-		localStorage.setItem('timeHistory',JSON.stringify(times));
-	},[times])
+	useEffect(() => {
+		localStorage.setItem('timeHistory', JSON.stringify(times));
+	}, [times])
 
-	const toggleTheSidebar = () =>{
+	const toggleTheSidebar = () => {
 		setToggleSidebar(!toggleSidebar)
 	}
 
 
 
 
-	if(isEdit){
+	if (isEdit) {
 		return <EditList />
 	}
-	else{
-		return(
+	else {
+		return (
 			<>
-			<div className="container">
-				<button className="toggler" type="button" onClick={toggleTheSidebar}>
-					<span>click to toggle menu</span>
-				</button>
-				{times.length && <Sidebar toggled={toggleSidebar} />}
-				<h1 className="title">Record Your Recess 
-					<span className="date">{`${new Date().getDate()}/${new Date().getMonth()+1}/${new Date().getFullYear()}`}</span>
-				</h1>
-				<h2 className="total">#Time Consumed: {totalData.hr}HR {totalData.min}M {totalData.sec}S </h2>
-				{/* <h3 className="approaxTime">Consumed Till Now: 0 min (Approx)</h3> */}
-				<div className="btn-group">
-					{startId ? <button className="btn stop" onClick={()=>{stopRecess()}}>Stop</button> : <button className="btn add" onClick={startRecess}>Start</button>}
-				</div>
-				
-				<ul className="timeList">
-					{<TimeSlots />}
-				</ul>
-				{startId=='' && currentTimeSet.data.length>0 && <button className="deleteAll" onClick={()=>setIsDelAll(true)}>Delete All</button>}
-			</div>
+				<div className="container">
+					<p className="bug">Found bug? <a target="_blank" href="https://github.com/githubraam/recess-bookmark/issues">Report It</a></p>
+					{times.length && <button className="toggler" type="button" onClick={toggleTheSidebar}>
+						<span>click to toggle menu</span>
+					</button>}
+					{times.length && <Sidebar toggled={toggleSidebar} />}
+					<h1 className="title">Record Your Recess
+						<span className="date">{`${new Date().getDate()}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`}</span>
+					</h1>
+					<h2 className="total">#Time Consumed: {totalData.hr}HR {totalData.min}M {totalData.sec}S </h2>
+					
+					<div className="btn-group">
+						{startId ? <button className="btn stop" onClick={() => { stopRecess() }}>Stop</button> : <button className="btn add" onClick={startRecess}>Start</button>}
+					</div>
 
-			{sureDelTime && <div className="popup" style={{padding: '20px'}}>
-				<p style={{padding: '15px', fontSize: '20px'}}>Are you sure? <br/>want to delete time slot!</p>
-				<div className="btn-group">
-					<button className="btn add" onClick={()=>setConfirmDel(true)}>Yes</button>
-					<button style={{marginTop: '10px'}} className="deleteAll" onClick={()=>setSureDelTime(false)}>No</button>
+					<ul className="timeList">
+						{<TimeSlots />}
+					</ul>
+					{startId == '' && currentTimeSet.data.length > 0 && <button className="deleteAll" onClick={() => setIsDelAll(true)}>Delete All</button>}
 				</div>
-				
-			</div>}
+
+				{sureDelTime && <div className="popup" style={{ padding: '20px' }}>
+					<p style={{ padding: '15px', fontSize: '20px' }}>Are you sure? <br />want to delete time slot!</p>
+					<div className="btn-group">
+						<button className="btn add" onClick={() => setConfirmDel(true)}>Yes</button>
+						<button style={{ marginTop: '10px' }} className="deleteAll" onClick={() => setSureDelTime(false)}>No</button>
+					</div>
+
+				</div>}
 
 
-			{isDelAll && <div className="popup" style={{padding: '20px'}}>
-				<p style={{padding: '15px', fontSize: '20px'}}>Are you sure? <br/>want to delete ALL time slot!</p>
-				<div className="btn-group">
-					<button className="btn add" onClick={()=>setYesDelAll(true)}>Yes</button>
-					<button style={{marginTop: '10px'}} className="deleteAll" onClick={()=>setIsDelAll(false)}>No</button>
-				</div>
-				
-			</div>}
+				{isDelAll && <div className="popup" style={{ padding: '20px' }}>
+					<p style={{ padding: '15px', fontSize: '20px' }}>Are you sure? <br />want to delete ALL time slot!</p>
+					<div className="btn-group">
+						<button className="btn add" onClick={() => setYesDelAll(true)}>Yes</button>
+						<button style={{ marginTop: '10px' }} className="deleteAll" onClick={() => setIsDelAll(false)}>No</button>
+					</div>
+
+				</div>}
 			</>
 
-			
+
 		)
 	}
 }

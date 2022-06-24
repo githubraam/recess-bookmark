@@ -21,6 +21,16 @@ body{
 	padding-top: 4rem;
 	position: relative;
 }
+.bug{
+	position: absolute;
+	left: 0;
+	top: 10px;
+	color: #0089ff;
+	font-size: 13px;
+}
+.bug > a{
+	color: #bbb;
+}
 .title{
 	color: #fff;
 	text-align: center;
