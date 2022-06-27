@@ -6,6 +6,11 @@ export const  calculateTheTime = (start, end) => {
       esec = end.sec,
       emin = end.min * 60,
       ehr = end.hr * 60 * 60;
+
+
+
+
+    // calculation per slot
   
     let totalStartSec = ssec + smin + shr,
       totalEndSec = esec + emin + ehr;
@@ -15,6 +20,8 @@ export const  calculateTheTime = (start, end) => {
     let getTotalHrs = parseInt(String(timeDiff / 3600), 10),
       getTotalMin = parseInt(String((timeDiff % 3600) / 60), 10),
       getTotalSec = (timeDiff % 3600) % 60;
+
+
 
     return [getTotalHrs , getTotalMin, getTotalSec];
     //console.log(getTotalHrs, getTotalMin, getTotalSec);
