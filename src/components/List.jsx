@@ -6,7 +6,7 @@ import TimeSlots from "./TimeSlots";
 
 const List = () => {
 	//getting variable from TimeContext, destructuring
-	const { startId, setStartId, isEdit, times, setTimes, setSureDelTime, sureDelTime, setConfirmDel, setCurrentTimeSet, currentTimeSet, totalData } = useContext(TimeContext)
+	const { startId, setStartId, isEdit, times,  setSureDelTime, sureDelTime, setConfirmDel, setCurrentTimeSet, currentTimeSet, totalData, setTotalData } = useContext(TimeContext)
 
 	const [isDelAll, setIsDelAll] = useState(false);
 	const [yesDelAll, setYesDelAll] = useState(false);
@@ -68,8 +68,6 @@ const List = () => {
 
 				setCurrentTimeSet(
 					{ ...currentTimeSet },
-					/* currentTimeSet.data[index].timeSlotTotal=totalSlotMin,
-					currentTimeSet.data[index].totalSlotHr = totalSlotHr, */
 					currentTimeSet.data[index].end.hr = new Date().getHours(),
 					currentTimeSet.data[index].end.min = new Date().getMinutes(),
 					currentTimeSet.data[index].end.sec = new Date().getSeconds()
@@ -104,6 +102,7 @@ const List = () => {
 	const toggleTheSidebar = () => {
 		setToggleSidebar(!toggleSidebar)
 	}
+
 
 
 

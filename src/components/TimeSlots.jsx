@@ -2,14 +2,15 @@ import React, { useContext, useEffect, useState } from "react";
 import { TimeContext } from "../context/TimeContext";
 import { calculateTheTime } from "../utility/utilities";
 const TimeSlots = (props) => {
-    const { times, setTimes, setIsEdit, setTempTime, setStartId, startId, setSureDelTime, confirmDel, setConfirmDel, currentTimeSet } = useContext(TimeContext)
+    const {setIsEdit, setTempTime, setStartId, startId, setSureDelTime, confirmDel, setConfirmDel, currentTimeSet, setCurrentTimeSet } = useContext(TimeContext)
 
     const [delId, setDelId] = useState('');
 
 
     const editTimeSlot = (timeID) => {
         setIsEdit(true);
-        const timeById = times.filter((time, index) => {
+        const timeById = currentTimeSet.data.filter((time, index) => {
+            //console.log('kk')
             return time.id === timeID
         })
         setTempTime(timeById);
@@ -19,6 +20,7 @@ const TimeSlots = (props) => {
 
     const delTimeSlot = (id) => {
         if (startId == '') {
+            console.log(id)
             setSureDelTime(true);
             setDelId(id)
         } else { alert('You need to stop TIMER first') }
@@ -27,11 +29,11 @@ const TimeSlots = (props) => {
 
     useEffect(() => {
         if (confirmDel) {
-            const newTimes = times.filter((time) => {
+            const newTimes = currentTimeSet.data.filter((time) => {
                 return time.id !== delId;
             })
-
-            setTimes(newTimes);
+            
+            setCurrentTimeSet({ ...currentTimeSet, data: [...newTimes] })
             setSureDelTime(false);
             setConfirmDel(false)
             setDelId('');
@@ -47,12 +49,11 @@ const TimeSlots = (props) => {
                 //calculate total recess in a single time gap
                 let totalSlotSec = 0, totalSlotMin = 0, totalSlotHr = 0;
 
-                const [getTotalHrs, getTotalMin, getTotalSec] = calculateTheTime(time.start, time.end);
+                const [getTotalHrs, getTotalMin, getTotalSec] = calculateTheTime(time.start, time.end, true);
                 totalSlotHr = getTotalHrs
                 totalSlotMin = getTotalMin
                 totalSlotSec = getTotalSec
-
-
+                
                 return <li className="timeBreak" key={index} >
                     <span style={slot}>Start: {time.start.hr}hr {time.start.min}min {time.start.sec}sec</span>
                     <span style={slot}>End: {time.end.hr || 0}hr {time.end.min || 0}min {time.end.sec || 0}sec</span>
