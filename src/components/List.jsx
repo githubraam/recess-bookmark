@@ -124,7 +124,7 @@ const List = () => {
 			tm = parseInt(String((timeDiff % 3600) / 60), 10),
 			ts = (timeDiff % 3600) % 60;
 
-			setTotalData({...totalData, hour:th, min:th, sec:ts})
+			setTotalData({...totalData, hour:th, min:tm, sec:ts})
 
 
 		}
