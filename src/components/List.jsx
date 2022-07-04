@@ -92,6 +92,43 @@ const List = () => {
 		localStorage.setItem('localTime', JSON.stringify(currentTimeSet));
 		localStorage.setItem('lstartId', startId);
 
+		if(!startId){
+			let end = {
+				hr: 0,
+				min: 0,
+				sec: 0
+			}
+			let start = {
+				hr: 0,
+				min: 0,
+				sec: 0
+			}
+			currentTimeSet.data.forEach(time => {
+				start.hr += time.start.hr;
+				start.min += time.start.min;
+				start.sec += time.start.sec;
+
+				end.hr += time.end.hr;
+				end.min += time.end.min;
+				end.sec += time.end.sec;
+
+			});
+
+
+			let totalStartSec = start.sec + start.min*60 + start.hr*60*60,
+			totalEndSec = end.sec + end.min*60 + end.hr*60*60;
+		
+			let timeDiff = totalEndSec - totalStartSec;
+		
+			let th = parseInt(String(timeDiff / 3600), 10),
+			tm = parseInt(String((timeDiff % 3600) / 60), 10),
+			ts = (timeDiff % 3600) % 60;
+
+			setTotalData({...totalData, hour:th, min:tm, sec:ts})
+
+
+		}
+
 	}, [currentTimeSet, startId])
 
 
@@ -122,7 +159,7 @@ const List = () => {
 					<h1 className="title">Record Your Recess
 						<span className="date">{`${new Date().getDate()}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`}</span>
 					</h1>
-					<h2 className="total">#Time Consumed: {totalData.hr}HR {totalData.min}M {totalData.sec}S </h2>
+					<h2 className="total">#Time Consumed: {totalData.hour}HR {totalData.min}M {totalData.sec}S </h2>
 					
 					<div className="btn-group">
 						{startId ? <button className="btn stop" onClick={() => { stopRecess() }}>Stop</button> : <button className="btn add" onClick={startRecess}>Start</button>}
