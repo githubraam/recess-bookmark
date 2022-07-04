@@ -152,10 +152,10 @@ const List = () => {
 			<>
 				<div className="container">
 					<p className="bug">Found bug? <a target="_blank" href="https://github.com/githubraam/recess-bookmark/issues">Report It</a></p>
-					{times.length && <button className="toggler" type="button" onClick={toggleTheSidebar}>
+					{times.length>0 && <button className="toggler" type="button" onClick={toggleTheSidebar}>
 						<span>click to toggle menu</span>
 					</button>}
-					{times.length && <Sidebar toggled={toggleSidebar} />}
+					{times.length>0 && <Sidebar toggled={toggleSidebar} />}
 					<h1 className="title">Record Your Recess
 						<span className="date">{`${new Date().getDate()}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`}</span>
 					</h1>
